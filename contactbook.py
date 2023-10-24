@@ -1,7 +1,5 @@
 import tkinter as tk
 from tkinter import messagebox
-
-# Function to add a new contact
 def add_contact():
     name = name_entry.get()
     phone = phone_entry.get()
@@ -14,22 +12,16 @@ def add_contact():
         clear_entries()
     else:
         messagebox.showerror("Error", "Name and Phone are required fields!")
-
-# Function to view the contact list
 def update_contact_list():
     contact_list.delete(0, tk.END)
     for name, details in contacts.items():
         contact_list.insert(tk.END, f"{name} - {details['Phone']}")
-
-# Function to search for a contact
 def search_contact():
     query = search_entry.get()
     contact_list.delete(0, tk.END)
     for name, details in contacts.items():
         if query.lower() in name.lower() or query in details['Phone']:
             contact_list.insert(tk.END, f"{name} - {details['Phone']}")
-
-# Function to update a contact
 def update_selected_contact():
     selected_contact = contact_list.get(contact_list.curselection())
     if selected_contact:
@@ -47,8 +39,6 @@ def update_selected_contact():
         phone_entry.insert(0, phone)
         email_entry.insert(0, email)
         address_entry.insert(0, address)
-
-# Function to delete a contact
 def delete_contact():
     selected_contact = contact_list.get(contact_list.curselection())
     if selected_contact:
@@ -56,15 +46,11 @@ def delete_contact():
         del contacts[name]
         update_contact_list()
         clear_entries()
-
-# Function to clear the input fields
 def clear_entries():
     name_entry.delete(0, tk.END)
     phone_entry.delete(0, tk.END)
     email_entry.delete(0, tk.END)
     address_entry.delete(0, tk.END)
-
-# Create a dictionary to store contacts
 contacts = {}
 
 # Create a tkinter window
@@ -112,5 +98,4 @@ view_button.pack()
 delete_button = tk.Button(root, text="Delete Contact", command=delete_contact)
 delete_button.pack()
 
-# Start the main loop
 root.mainloop()
