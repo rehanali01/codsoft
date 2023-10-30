@@ -1,0 +1,71 @@
+import tkinter as tk
+from tkinter import messagebox
+
+def add_task():
+    task = entry.get()
+    if task:
+        priority = priority_var.get()
+        task_text = f"{task} (Priority: {priority})"
+        listbox.insert(tk.END, task_text)
+        entry.delete(0, tk.END)
+    else:
+        messagebox.showwarning("Warning", "Please enter a task.")
+def remove_task():
+    try:
+        selected_task_index = listbox.curselection()[0]
+        listbox.delete(selected_task_index)
+    except IndexError:
+        messagebox.showwarning("Warning", "Please select a task to remove.")
+
+def clear_completed_tasks():
+    for i in reversed(range(listbox.size())):
+        task_text = listbox.get(i)
+        if " (Priority: Completed)" in task_text:
+            listbox.delete(i)
+
+def mark_completed():
+    try:
+        selected_task_index = listbox.curselection()[0]
+        task_text = listbox.get(selected_task_index)
+        if " (Priority: Completed)" not in task_text:
+            task_text = task_text.replace(" (Priority: ", " (Priority: Completed, ")
+            listbox.delete(selected_task_index)
+            listbox.insert(tk.END, task_text, 'completed')
+    except IndexError:
+        messagebox.showwarning("Warning", "Please select a task to mark as completed.")
+
+def set_completed_text_color(event):
+    selected_task_index = listbox.nearest(event.y)
+    if selected_task_index is not None:
+        task_text = listbox.get(selected_task_index)
+        if " (Priority: Completed)" in task_text:
+            listbox.itemconfig(selected_task_index, {'fg': 'gray'})
+
+root = tk.Tk()
+root.title("To-Do List")
+
+listbox = tk.Listbox(root, selectmode=tk.SINGLE, selectbackground="lightblue")
+listbox.pack(pady=10)
+listbox.bind("<ButtonRelease-1>", set_completed_text_color)
+
+entry = tk.Entry(root, font=("Helvetica", 14))
+entry.pack(pady=10)
+
+priority_label = tk.Label(root, text="Priority:")
+priority_label.pack()
+priority_var = tk.StringVar(root)
+priority_var.set("Normal")  # Set the initial priority
+priority_dropdown = tk.OptionMenu(root, priority_var, "Low", "Normal", "High")
+priority_dropdown.pack()
+
+add_button = tk.Button(root, text="Add Task", command=add_task)
+remove_button = tk.Button(root, text="Remove Task", command=remove_task)
+clear_button = tk.Button(root, text="Clear Completed", command=clear_completed_tasks)
+mark_button = tk.Button(root, text="Mark as Completed", command=mark_completed)
+
+add_button.pack()
+remove_button.pack()
+clear_button.pack()
+mark_button.pack()
+
+root.mainloop()
